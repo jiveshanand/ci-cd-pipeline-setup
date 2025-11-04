@@ -4,16 +4,23 @@ pipeline {
   stages {
     stage('Checkout') {
       steps {
-        git branch: 'main', 
-            url: 'https://github.com/jiveshanand/ci-cd-pipeline-setup.git', 
-            credentialsId: 'github-token'
+        git branch: 'main',
+            credentialsId: 'github-token',
+            url: 'https://github.com/jiveshanand/ci-cd-pipeline-setup.git'
       }
     }
 
     stage('Build') {
+      agent {
+        docker {
+          image 'node:18'
+          args '-v /var/jenkins_home/workspace:/workspace'
+        }
+      }
       steps {
-        echo 'Building the application...'
+        sh 'node -v'
         sh 'npm install'
+        echo '✅ Build complete!'
       }
     }
 
@@ -26,7 +33,7 @@ pipeline {
 
     stage('Deploy') {
       steps {
-        echo 'Deploying the app (simulated)...'
+        echo 'Deployment step (simulated)...'
       }
     }
   }
